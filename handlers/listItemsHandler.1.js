@@ -7,9 +7,16 @@ export const listItemsHandler = async data => {
 			const detailedContent = await getPageContent(initialState.carHref)
 			const $ = cheerio.load(detailedContent)
 
-			// const prices = $('.price_value strong')
+			const price = $('.price_value').each((i, header) => {
+				console.log($, { header }.find())
+			})
+			const label = $('.label').text()
+			const argument = $('.argument').text()
 
-			// console.log(prices)
+			console.log({
+				label,
+				argument,
+			})
 		}
 	} catch (e) {
 		throw e
