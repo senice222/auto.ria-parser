@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer'
+const puppeteer = require('puppeteer')
 
 export const LAUNCH_PUPPETEER_OPTS = {
 	args: [
@@ -17,14 +17,14 @@ export const PAGE_PUPPETEER_OPTS = {
 	timeout: 3000000,
 }
 
-export const getPageContent = async url => {
+export const getPageContent = async (url) => {
 	try {
-		const browser = await puppeteer.launch(LAUNCH_PUPPETEER_OPTS)
+		const browser = puppeteer.launch(LAUNCH_PUPPETEER_OPTS)
 		const page = await browser.newPage()
 		await page.goto(url, PAGE_PUPPETEER_OPTS)
 		const content = await page.content()
-		browser.close()
-
+		
+		await browser.close()
 		return content
 	} catch (e) {
 		throw e
