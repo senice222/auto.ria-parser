@@ -1,9 +1,8 @@
 const { Markup } = require("telegraf")
 const User = require("../models/User")
 
-
 module.exports = (bot) => {
-    bot.command("start", async (ctx) => {
+    bot.action("start", async (ctx) => {
         const user = await User.findOne({id: ctx.from.id})
 
         return ctx.reply(
