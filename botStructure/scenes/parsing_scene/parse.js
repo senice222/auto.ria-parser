@@ -1,12 +1,12 @@
-const { Scenes, Markup } = require("telegraf");
+const { Scenes } = require("telegraf");
 const cancelKeyboad = require("./keyboard");
 const arrayLength = require("../../helpers/arrray_length");
 const getPageContent = require("../../helpers/puppeteer");
-const listItemHandler = require("../../handlers/list_items_handler");
+const parsingHandler = require("../../handlers/parsing_handler");
 
 
 const createTask = new Scenes.WizardScene(
-    "bmw",
+    "parse",
     async (ctx) => {
         ctx.wizard.state.carToParse = {}
         ctx.wizard.state.deleteMessages = []
@@ -42,7 +42,7 @@ const createTask = new Scenes.WizardScene(
 
             ctx.reply(
                 `🌆 <b>Укажите город. (укр. мовою)</b>` +
-                '\n<i>Пример: Киев</i>',
+                '\n<i>Пример: Одеса</i>',
                 {
                     reply_markup: cancelKeyboad,
                     parse_mode: "HTML"
@@ -75,8 +75,9 @@ const createTask = new Scenes.WizardScene(
             for (const page of arrayLength(ctx.wizard.state.carToParse.pages)) {
                 const URL = `https://auto.ria.com/uk/legkovie/${ctx.wizard.state.carToParse['mark']}/?page=${page}`
                 const content = await getPageContent(URL)
-                await listItemHandler(content, ctx.wizard.state.carToParse, ctx)
+                await parsingHandler(content, ctx.wizard.state.carToParse, ctx)
             }
+            await ctx.scene.leave()
         }
     },
 )

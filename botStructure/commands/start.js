@@ -13,12 +13,10 @@ module.exports = (bot) => {
             {
                 reply_markup: Markup.inlineKeyboard([
                     [
-                        Markup.button.callback("BMW", "?bmw"),
-                        Markup.button.callback("Mercedes", "?mercedes"),
+                        Markup.button.callback("Начать парсинг", "?parse"),
                     ],
                     [
-                        Markup.button.callback("Hyundai", "?hyundai"),
-                        Markup.button.callback("Audi", "?audi"),
+                        Markup.button.callback("Получить файлы", "?list"),
                     ],
                 ]).resize().reply_markup
             }

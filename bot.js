@@ -6,7 +6,7 @@ const initBot = () => {
 	bot.use(session())
 
 	const Stage = new Scenes.Stage([
-		require("./botStructure/scenes/bmw/bmw")
+		require("./botStructure/scenes/parsing_scene/parse")
 	])
 
 	// middlewares
@@ -18,7 +18,7 @@ const initBot = () => {
 
 	// callbacks
 	require("./botStructure/callbacks/start")(bot)
-	require("./botStructure/callbacks/bmw")(bot)
+	require("./botStructure/callbacks/parse")(bot)
 
 	bot.launch()
         .then(console.log('[Parser Bot] Successfully runned'))
