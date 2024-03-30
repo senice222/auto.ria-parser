@@ -70,13 +70,16 @@ const createTask = new Scenes.WizardScene(
         if (ctx.updateType === "message") {
             ctx.wizard.state.carToParse['pages'] = ctx.message.text
 
-            ctx.reply('⏳ Начинаем процесс парсинга...');
-        
-            for (const page of arrayLength(ctx.wizard.state.carToParse.pages)) {
-                const URL = `https://auto.ria.com/uk/legkovie/${ctx.wizard.state.carToParse['mark']}/?page=${page}`
+            ctx.reply('⏳ Начинаем процесс парсинга...').then((msg) => ctx.wizard.state.deleteMessages.push(msg.message_id));
+            const carsList = []
+            for (const page of arrayLength(+ctx.wizard.state.carToParse.pages)) {
+                const mark = ctx.wizard.state.carToParse['mark']
+                const city = ctx.wizard.state.carToParse['city']
+                const URL = `https://auto.ria.com/uk/legkovie/${mark}/city/${city}/?page=${page}`
                 const content = await getPageContent(URL)
-                await parsingHandler(content, ctx.wizard.state.carToParse, ctx)
+                await parsingHandler(content, ctx.wizard.state.carToParse, ctx, page, carsList)
             }
+            ctx.wizard.state.deleteMessages.forEach(msg => ctx.deleteMessage(msg))
             await ctx.scene.leave()
         }
     },

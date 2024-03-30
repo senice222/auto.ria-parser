@@ -19,6 +19,8 @@ const initBot = () => {
 	// callbacks
 	require("./botStructure/callbacks/start")(bot)
 	require("./botStructure/callbacks/parse")(bot)
+	require("./botStructure/callbacks/list/list")(bot)
+	require("./botStructure/callbacks/list/detailed_list")(bot)
 
 	bot.launch()
         .then(console.log('[Parser Bot] Successfully runned'))

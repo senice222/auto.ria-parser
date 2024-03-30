@@ -3,12 +3,10 @@ const { slugify } = require('transliteration')
 const User = require('../models/User')
 const { inspect } = require("util")
 
-const parsingHandler = async (content, state, ctx) => {
+const parsingHandler = async (content, state, ctx, maxPage, carsList) => {
 	try {
 		const $ = cheerio.load(content)
-		const { budget, city } = state
-
-		const cars = []
+		const {budget, pages, mark} = state
 
 		$('.content').each((i, element) => {
 			const carInfo = $(element).find(".unstyle .item-char").map((i, child) => $(child).text().trim()).get();
@@ -21,10 +19,9 @@ const parsingHandler = async (content, state, ctx) => {
 			const price = $(element).find('.size15').children('.size22').text().trim()
 			
 			const numericPrice = parseFloat(price.replace(/\D/g, ''))
-			const cityName = carCity.split('(')[0].trim()
 
-			if (+budget >= numericPrice && cityName === city) {
-				cars.push({
+			if (+budget >= numericPrice) {
+				carsList.push({
 					carTitle,
 					carHref,
 					carRace: race,
@@ -38,14 +35,17 @@ const parsingHandler = async (content, state, ctx) => {
 				console.log("not found any cars")
 			}
 		});
-		await User.findOneAndUpdate({ id: ctx.from.id }, {
-			$push: { parsed: JSON.stringify(cars) }
-		})
 
-		const buffer = Buffer.from(inspect(cars), 'utf-8')
-		ctx.replyWithDocument({ source: buffer, filename: `cars.json` })
-
-		return ctx.reply('✅ Успешно спаршенно.');
+		if (+pages === maxPage) {
+			const id = new Date().valueOf()
+			await User.findOneAndUpdate({ id: ctx.from.id }, {
+				$push: { parsed: {id, mark, info: JSON.stringify(carsList)} }
+			})
+	
+			const buffer = Buffer.from(inspect(carsList), 'utf-8')
+			ctx.replyWithDocument({ source: buffer, filename: `cars.json` })
+			return ctx.reply('✅ Успешно спаршенно.');
+		}
 	} catch (e) {
 		console.log("error with parsing", e)
 	}
